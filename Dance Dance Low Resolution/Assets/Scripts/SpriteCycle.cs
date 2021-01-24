@@ -76,7 +76,7 @@ public class SpriteCycle : MonoBehaviour
 
     Note GenerateNote()
     {
-        int noteToSpawn = Random.Range(0, notes.Length - 1);
+        int noteToSpawn = Random.Range(0, notes.Length);
         return notes[noteToSpawn];
     }
 
