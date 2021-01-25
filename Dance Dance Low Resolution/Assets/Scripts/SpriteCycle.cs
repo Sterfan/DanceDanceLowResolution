@@ -7,12 +7,14 @@ public class SpriteCycle : MonoBehaviour
     [SerializeField]
     Note[] notes;
 
+    HitNotes noteHitScript;
+
     List<GameObject> onNotes = new List<GameObject>();
     List<GameObject> offNotes = new List<GameObject>();
     List<Note> notesInQueue = new List<Note>();
 
     [SerializeField]
-    float tickTime = 1;
+    public float tickTime = 1;
 
     [SerializeField]
     float speedUpTime = 10;
@@ -27,7 +29,7 @@ public class SpriteCycle : MonoBehaviour
     int loops = 0;
 
 
-    void Awake()
+    void Start()
     {
         for (int i = 0; i < notes.Length; i++)
         {
@@ -36,6 +38,8 @@ public class SpriteCycle : MonoBehaviour
                 offNotes.Add(notes[i].positions[l]);
             }
         }
+
+        noteHitScript = FindObjectOfType<HitNotes>();
     }
 
 
@@ -58,6 +62,8 @@ public class SpriteCycle : MonoBehaviour
             AddToOnNotes();
             TurnOnNotes();
             TurnOFFNotes();
+            noteHitScript.ResetHitKeys();
+            noteHitScript.DisableThumperEffectSprites();
 
 
 
@@ -70,6 +76,7 @@ public class SpriteCycle : MonoBehaviour
         //if (speedTimer >= speedUpTime)
         //{
         //    tickTime -= acceleration;
+        //    noteHitScript.tickTime = tickTime;
         //}
     }
 
