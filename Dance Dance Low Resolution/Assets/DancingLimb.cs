@@ -40,4 +40,18 @@ public class DancingLimb : MonoBehaviour
             countingUp = true;
         }
     }
+
+    public void MakeManDance()
+    {
+        if (countingUp == true)
+        {
+            count += 1;
+            anim.SetInteger("count", count);
+        }
+        else
+        {
+            count -= 1;
+            anim.SetInteger("count", count);
+        }
+    }
 }
