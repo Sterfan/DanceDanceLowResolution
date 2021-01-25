@@ -16,7 +16,13 @@ public class HitNotes : MonoBehaviour
     GameObject[] missSprites;
 
     [SerializeField]
+    GameObject[] hitSpaces;
+
+    [SerializeField]
     int[] hitsPerMultiplier = new int[3];
+
+    [SerializeField]
+    DancingLimb[] dancingLimbs;
 
     public float tickTime = 1;
 
@@ -63,6 +69,8 @@ public class HitNotes : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Q))
             {
                 hitKeys[yellowIndex] = true;
+                hitSpaces[yellowIndex].SetActive(false);
+                dancingLimbs[yellowIndex].MakeManDance();
                 if (lastNotes[yellowIndex].activeInHierarchy)
                 {
                     //Do good hit stuff
@@ -95,6 +103,8 @@ public class HitNotes : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.W))
             {
                 hitKeys[greenIndex] = true;
+                hitSpaces[greenIndex].SetActive(false);
+                dancingLimbs[greenIndex].MakeManDance();
                 if (lastNotes[greenIndex].activeInHierarchy)
                 {
                     //Do good hit stuff
@@ -127,6 +137,8 @@ public class HitNotes : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.O))
             {
                 hitKeys[redIndex] = true;
+                hitSpaces[redIndex].SetActive(false);
+                dancingLimbs[redIndex].MakeManDance();
                 if (lastNotes[redIndex].activeInHierarchy)
                 {
                     //Do good hit stuff
@@ -159,6 +171,8 @@ public class HitNotes : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.P))
             {
                 hitKeys[blueIndex] = true;
+                hitSpaces[blueIndex].SetActive(false);
+                dancingLimbs[blueIndex].MakeManDance();
                 if (lastNotes[blueIndex].activeInHierarchy)
                 {
                     //Do good hit stuff
@@ -236,6 +250,14 @@ public class HitNotes : MonoBehaviour
         for (int i = 0; i < hitKeys.Length; i++)
         {
             hitKeys[i] = false;
+        }
+    }
+
+    public void ResetHitSpaces()
+    {
+        for (int i = 0; i < hitSpaces.Length; i++)
+        {
+            hitSpaces[i].SetActive(true);
         }
     }
 
