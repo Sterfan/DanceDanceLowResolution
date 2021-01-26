@@ -2,10 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HitNotes : MonoBehaviour
 {
     SpriteCycle spriteCycler;
+
+    [SerializeField]
+    GameObject nonPaintedSprites;
+
+    [SerializeField]
+    GameObject tryAgain;
 
     [SerializeField]
     GameObject[] multiplierBars;
@@ -67,6 +74,10 @@ public class HitNotes : MonoBehaviour
 
     float timer = 0;
 
+    bool notAdded = true;
+
+    List<GameObject> notesToHit = new List<GameObject>();
+
     bool[] hitKeys = new bool[4];
 
     // Start is called before the first frame update
@@ -85,6 +96,8 @@ public class HitNotes : MonoBehaviour
     {
         scoreText.text = score.ToString();
 
+        CheckNotesToHit();
+
         if (!hitKeys[yellowIndex])
         {
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Q))
@@ -101,6 +114,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, yellowIndex);
                     AddScore();
                     consecutiveHits++;
@@ -137,6 +151,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, greenIndex);
                     AddScore();
                     consecutiveHits++;
@@ -173,6 +188,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, redIndex);
                     AddScore();
                     consecutiveHits++;
@@ -209,6 +225,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, blueIndex);
                     AddScore();
                     consecutiveHits++;
@@ -233,6 +250,14 @@ public class HitNotes : MonoBehaviour
         UpdateMultiplier();
         ManageMultiplierSprites();
 
+        if (health == 0)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Time.timeScale = 1f;
+                SceneManager.LoadScene("Axel's Scene");
+            }
+        }
     }
 
 
@@ -316,9 +341,14 @@ public class HitNotes : MonoBehaviour
     {
         health--;
         //Set heart sprite inactive
-        hearts[health].SetActive(false);
+        if (health >= 0)
+        {
+            hearts[health].SetActive(false);
+        }
         if (health == 0)
         {
+            tryAgain.SetActive(true);
+            nonPaintedSprites.SetActive(false);
             Time.timeScale = 0f;
         }
     }
@@ -375,5 +405,41 @@ public class HitNotes : MonoBehaviour
     void AddScore()
     {
         score += scorePerHit * multiplier;
+    }
+
+    void CheckNotesToHit()
+    {
+        if (notAdded)
+        {
+            for (int i = 0; i < lastNotes.Length; i++)
+            {
+                if (lastNotes[i].activeInHierarchy)
+                {
+                    notesToHit.Add(lastNotes[i]);
+                }
+            }
+            notAdded = false;
+        }
+    }
+
+    public void CheckIfAllNotesHit()
+    {
+        if (notesToHit.Count > 0)
+        {
+            for (int i = 0; i < notesToHit.Count; i++)
+            {
+                RemoveHealth();
+            }
+            notesToHit.Clear();
+        }
+        notAdded = true;
+    }
+
+    void RemoveHitNote()
+    {
+        if (notesToHit.Count > 0)
+        {
+            notesToHit.RemoveAt(0);
+        }
     }
 }

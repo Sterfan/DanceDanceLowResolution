@@ -65,7 +65,7 @@ public class SpriteCycle : MonoBehaviour
             noteHitScript.ResetHitKeys();
             noteHitScript.DisableThumperEffectSprites();
             noteHitScript.ResetHitSpaces();
-
+            noteHitScript.CheckIfAllNotesHit();
 
 
 
