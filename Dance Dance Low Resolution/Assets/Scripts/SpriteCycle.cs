@@ -8,6 +8,7 @@ public class SpriteCycle : MonoBehaviour
     Note[] notes;
 
     HitNotes noteHitScript;
+    Partition partition;
 
     List<GameObject> onNotes = new List<GameObject>();
     List<GameObject> offNotes = new List<GameObject>();
@@ -23,6 +24,8 @@ public class SpriteCycle : MonoBehaviour
     float acceleration = 0.1f; //Time by which it reduces tick time
 
     float timer = 0;
+
+    int currentTick = 0;
 
     float speedTimer = 0;
 
@@ -40,6 +43,7 @@ public class SpriteCycle : MonoBehaviour
         }
 
         noteHitScript = FindObjectOfType<HitNotes>();
+        partition = FindObjectOfType<Partition>();
     }
 
 
@@ -58,7 +62,8 @@ public class SpriteCycle : MonoBehaviour
             //    AddNotesToQueue(GenerateNote());
             //    loops++;
             //}
-            AddNotesToQueue(GenerateNote());
+            //AddNotesToQueue(GenerateNote());
+            ReadNotesFromFile();
             AddToOnNotes();
             TurnOnNotes();
             TurnOFFNotes();
@@ -70,7 +75,7 @@ public class SpriteCycle : MonoBehaviour
 
 
 
-
+            currentTick++;
             timer = 0;
         }
 
@@ -165,5 +170,35 @@ public class SpriteCycle : MonoBehaviour
                 offNotes[i].SetActive(false);
             }
         }
+    }
+
+    void ReadNotesFromFile()
+    {
+        if (currentTick < partition.eachLine.Count)
+        {
+            if (partition.eachLine[currentTick].Contains("y"))
+            {
+                AddNotesToQueue(notes[0]);
+            }
+            if (partition.eachLine[currentTick].Contains("g"))
+            {
+                AddNotesToQueue(notes[1]);
+
+            }
+            if (partition.eachLine[currentTick].Contains("r"))
+            {
+                AddNotesToQueue(notes[2]);
+                
+            }
+            if (partition.eachLine[currentTick].Contains("b"))
+            {
+                AddNotesToQueue(notes[3]);
+            }
+        }
+    }
+
+    void AddAfterXTicks(int ticks)
+    {
+
     }
 }
