@@ -1,10 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class HitNotes : MonoBehaviour
 {
     SpriteCycle spriteCycler;
+
+    [SerializeField]
+    GameObject nonPaintedSprites;
+
+    [SerializeField]
+    GameObject tryAgain;
+
+    [SerializeField]
+    GameObject[] multiplierBars;
+
+    [SerializeField]
+    GameObject[] multiplierNumbers;
+
+    [SerializeField]
+    GameObject discoFever;
+
+    [SerializeField]
+    GameObject boo;
+
+    [SerializeField]
+    GameObject[] hearts;
 
     [SerializeField]
     GameObject[] lastNotes;
@@ -23,6 +46,9 @@ public class HitNotes : MonoBehaviour
 
     [SerializeField]
     DancingLimb[] dancingLimbs;
+
+    [SerializeField]
+     Text scoreText;
 
     public float tickTime = 1;
 
@@ -48,6 +74,10 @@ public class HitNotes : MonoBehaviour
 
     float timer = 0;
 
+    bool notAdded = true;
+
+    List<GameObject> notesToHit = new List<GameObject>();
+
     bool[] hitKeys = new bool[4];
 
     // Start is called before the first frame update
@@ -64,6 +94,10 @@ public class HitNotes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        scoreText.text = score.ToString();
+
+        CheckNotesToHit();
+
         if (!hitKeys[yellowIndex])
         {
             if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.Q))
@@ -80,6 +114,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, yellowIndex);
                     AddScore();
                     consecutiveHits++;
@@ -90,6 +125,8 @@ public class HitNotes : MonoBehaviour
 
                     //Set bad hit sprites on for a little
                     //Reset multiplier
+
+                    EnableBoo();
 
                     ActivateHitSprites(false, yellowIndex);
                     RemoveHealth();
@@ -114,6 +151,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, greenIndex);
                     AddScore();
                     consecutiveHits++;
@@ -124,6 +162,8 @@ public class HitNotes : MonoBehaviour
 
                     //Set bad hit sprites on for a little
                     //Reset multiplier
+
+                    EnableBoo();
 
                     ActivateHitSprites(false, greenIndex);
                     RemoveHealth();
@@ -148,6 +188,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, redIndex);
                     AddScore();
                     consecutiveHits++;
@@ -158,6 +199,8 @@ public class HitNotes : MonoBehaviour
 
                     //Set bad hit sprites on for a little
                     //Reset multiplier
+
+                    EnableBoo();
 
                     ActivateHitSprites(false, redIndex);
                     RemoveHealth();
@@ -182,6 +225,7 @@ public class HitNotes : MonoBehaviour
                     //Make guy dance
                     //Add to multiplier progress
 
+                    RemoveHitNote();
                     ActivateHitSprites(true, blueIndex);
                     AddScore();
                     consecutiveHits++;
@@ -193,6 +237,8 @@ public class HitNotes : MonoBehaviour
                     //Set bad hit sprites on for a little
                     //Reset multiplier
 
+                    EnableBoo();
+
                     ActivateHitSprites(false, blueIndex);
                     RemoveHealth();
                     consecutiveHits = 0;
@@ -202,7 +248,16 @@ public class HitNotes : MonoBehaviour
 
 
         UpdateMultiplier();
+        ManageMultiplierSprites();
 
+        if (health == 0)
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Time.timeScale = 1f;
+                SceneManager.LoadScene("Axel's Scene");
+            }
+        }
     }
 
 
@@ -226,10 +281,76 @@ public class HitNotes : MonoBehaviour
         }
     }
 
+    void ManageMultiplierSprites()
+    {
+        if (consecutiveHits < hitsPerMultiplier[0] / 3)
+        {
+            for (int i = 0; i < multiplierBars.Length; i++)
+            {
+                multiplierBars[i].SetActive(false);
+            }
+            for (int i = 0; i < multiplierNumbers.Length; i++)
+            {
+                multiplierNumbers[i].SetActive(false);
+            }
+            discoFever.SetActive(false);
+        }
+        if (consecutiveHits >= hitsPerMultiplier[0] / 3)
+        {
+            multiplierBars[0].SetActive(true);
+        }
+        if (consecutiveHits >= hitsPerMultiplier[0] / 3 * 2)
+        {
+            multiplierBars[1].SetActive(true);
+        }
+        if (consecutiveHits >= hitsPerMultiplier[0])
+        {
+            multiplierBars[2].SetActive(true);
+            multiplierNumbers[0].SetActive(true);
+        }
+        if (consecutiveHits >= ((hitsPerMultiplier[1] - hitsPerMultiplier[0])/ 3) + hitsPerMultiplier[0])
+        {
+            multiplierBars[3].SetActive(true);
+        }
+        if (consecutiveHits >= ((hitsPerMultiplier[1] - hitsPerMultiplier[0]) / 3 * 2) + hitsPerMultiplier[0])
+        {
+            multiplierBars[4].SetActive(true);
+        }
+        if (consecutiveHits >= (hitsPerMultiplier[1] - hitsPerMultiplier[0]) + hitsPerMultiplier[0])
+        {
+            multiplierBars[5].SetActive(true);
+            multiplierNumbers[1].SetActive(true);
+        }
+        if (consecutiveHits >= ((hitsPerMultiplier[2] - hitsPerMultiplier[1])/ 3) + hitsPerMultiplier[1])
+        {
+            multiplierBars[6].SetActive(true);
+        }
+        if (consecutiveHits >= ((hitsPerMultiplier[2] - hitsPerMultiplier[1]) / 3 * 2) + hitsPerMultiplier[1])
+        {
+            multiplierBars[7].SetActive(true);
+        }
+        if (consecutiveHits >= (hitsPerMultiplier[2] - hitsPerMultiplier[1]) + hitsPerMultiplier[1])
+        {
+            multiplierBars[8].SetActive(true);
+            multiplierNumbers[2].SetActive(true);
+            discoFever.SetActive(true);
+        }
+    }
+
     void RemoveHealth()
     {
         health--;
         //Set heart sprite inactive
+        if (health >= 0)
+        {
+            hearts[health].SetActive(false);
+        }
+        if (health == 0)
+        {
+            tryAgain.SetActive(true);
+            nonPaintedSprites.SetActive(false);
+            Time.timeScale = 0f;
+        }
     }
 
     void ActivateHitSprites(bool hit, int index)
@@ -270,13 +391,55 @@ public class HitNotes : MonoBehaviour
         }
     }
 
-    void DisplayScore()
+    void EnableBoo()
     {
+        boo.SetActive(true);
+        Invoke("DisableBoo", tickTime);
+    }
 
+    public void DisableBoo()
+    {
+        boo.SetActive(false);
     }
 
     void AddScore()
     {
         score += scorePerHit * multiplier;
+    }
+
+    void CheckNotesToHit()
+    {
+        if (notAdded)
+        {
+            for (int i = 0; i < lastNotes.Length; i++)
+            {
+                if (lastNotes[i].activeInHierarchy)
+                {
+                    notesToHit.Add(lastNotes[i]);
+                }
+            }
+            notAdded = false;
+        }
+    }
+
+    public void CheckIfAllNotesHit()
+    {
+        if (notesToHit.Count > 0)
+        {
+            for (int i = 0; i < notesToHit.Count; i++)
+            {
+                RemoveHealth();
+            }
+            notesToHit.Clear();
+        }
+        notAdded = true;
+    }
+
+    void RemoveHitNote()
+    {
+        if (notesToHit.Count > 0)
+        {
+            notesToHit.RemoveAt(0);
+        }
     }
 }
