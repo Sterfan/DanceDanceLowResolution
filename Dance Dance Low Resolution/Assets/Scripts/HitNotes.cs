@@ -50,7 +50,7 @@ public class HitNotes : MonoBehaviour
     [SerializeField]
      Text scoreText;
 
-    public float tickTime = 1;
+    public float tickTime;
 
     int score = 0;
 
@@ -71,8 +71,6 @@ public class HitNotes : MonoBehaviour
     int health = 3;
 
     int multiplier = 1;
-
-    float timer = 0;
 
     bool notAdded = true;
 
@@ -250,7 +248,7 @@ public class HitNotes : MonoBehaviour
         UpdateMultiplier();
         ManageMultiplierSprites();
 
-        if (health == 0)
+        if (health <= 0)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -345,7 +343,7 @@ public class HitNotes : MonoBehaviour
         {
             hearts[health].SetActive(false);
         }
-        if (health == 0)
+        if (health <= 0)
         {
             tryAgain.SetActive(true);
             nonPaintedSprites.SetActive(false);
@@ -426,6 +424,7 @@ public class HitNotes : MonoBehaviour
     {
         if (notesToHit.Count > 0)
         {
+            EnableBoo();
             for (int i = 0; i < notesToHit.Count; i++)
             {
                 RemoveHealth();
