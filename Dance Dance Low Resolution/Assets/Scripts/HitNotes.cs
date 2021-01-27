@@ -8,6 +8,8 @@ public class HitNotes : MonoBehaviour
 {
     SpriteCycle spriteCycler;
 
+    public bool failSafeMode = false;
+
     [SerializeField]
     GameObject nonPaintedSprites;
 
@@ -337,17 +339,20 @@ public class HitNotes : MonoBehaviour
 
     void RemoveHealth()
     {
-        health--;
-        //Set heart sprite inactive
-        if (health >= 0)
+        if (!failSafeMode)
         {
-            hearts[health].SetActive(false);
-        }
-        if (health <= 0)
-        {
-            tryAgain.SetActive(true);
-            nonPaintedSprites.SetActive(false);
-            Time.timeScale = 0f;
+            health--;
+            //Set heart sprite inactive
+            if (health >= 0)
+            {
+                hearts[health].SetActive(false);
+            }
+            if (health <= 0)
+            {
+                tryAgain.SetActive(true);
+                nonPaintedSprites.SetActive(false);
+                Time.timeScale = 0f;
+            }
         }
     }
 

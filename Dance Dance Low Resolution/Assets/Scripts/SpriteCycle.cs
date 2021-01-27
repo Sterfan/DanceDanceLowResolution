@@ -5,6 +5,9 @@ using UnityEngine;
 public class SpriteCycle : MonoBehaviour
 {
     [SerializeField]
+    AudioSource audioSource;
+
+    [SerializeField]
     Note[] notes;
 
     HitNotes noteHitScript;
@@ -31,6 +34,8 @@ public class SpriteCycle : MonoBehaviour
 
     int loops = 0;
 
+    bool startedMusic = false;
+
 
     void Start()
     {
@@ -51,6 +56,8 @@ public class SpriteCycle : MonoBehaviour
     {
         timer += Time.deltaTime;
         speedTimer += Time.deltaTime;
+
+        StartMusic();
 
         if (timer >= tickTime)
         {
@@ -197,8 +204,12 @@ public class SpriteCycle : MonoBehaviour
         }
     }
 
-    void AddAfterXTicks(int ticks)
+    void StartMusic()
     {
-
+        if (!startedMusic && currentTick == notes[0].positions.Length)
+        {
+            audioSource.Play();
+            startedMusic = true;
+        }
     }
 }
