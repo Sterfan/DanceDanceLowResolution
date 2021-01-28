@@ -10,6 +10,11 @@ public class HitNotes : MonoBehaviour
 
     public bool failSafeMode = false;
 
+    AudioManager audioManager;
+
+    [SerializeField]
+    AudioSource backgroundBeat;
+
     [SerializeField]
     GameObject nonPaintedSprites;
 
@@ -76,6 +81,8 @@ public class HitNotes : MonoBehaviour
 
     bool notAdded = true;
 
+    bool playAgainSound = false;
+
     List<GameObject> notesToHit = new List<GameObject>();
 
     bool[] hitKeys = new bool[4];
@@ -88,6 +95,7 @@ public class HitNotes : MonoBehaviour
             hitKeys[i] = false;
         }
         spriteCycler = FindObjectOfType<SpriteCycle>();
+        audioManager = FindObjectOfType<AudioManager>();
         tickTime = spriteCycler.tickTime;
     }
 
@@ -113,7 +121,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
-
+                    audioManager.PlaySound("Note 2");
                     RemoveHitNote();
                     ActivateHitSprites(true, yellowIndex);
                     AddScore();
@@ -150,6 +158,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
+                    audioManager.PlaySound("Note 3");
 
                     RemoveHitNote();
                     ActivateHitSprites(true, greenIndex);
@@ -187,6 +196,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
+                    audioManager.PlaySound("Note 4");
 
                     RemoveHitNote();
                     ActivateHitSprites(true, redIndex);
@@ -224,6 +234,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
+                    audioManager.PlaySound("Note 1");
 
                     RemoveHitNote();
                     ActivateHitSprites(true, blueIndex);
@@ -342,6 +353,7 @@ public class HitNotes : MonoBehaviour
         if (!failSafeMode)
         {
             health--;
+            audioManager.PlaySound("Mistake");
             //Set heart sprite inactive
             if (health >= 0)
             {
@@ -351,7 +363,13 @@ public class HitNotes : MonoBehaviour
             {
                 tryAgain.SetActive(true);
                 nonPaintedSprites.SetActive(false);
-                Time.timeScale = 0f;
+                if (!playAgainSound)
+                {
+                    backgroundBeat.Stop();
+                    audioManager.PlaySound("Try Again");
+                    playAgainSound = true;
+                }
+                //Time.timeScale = 0f;
             }
         }
     }

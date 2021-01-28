@@ -24,7 +24,7 @@ public class SpriteCycle : MonoBehaviour
     float speedUpTime = 10;
 
     [SerializeField]
-    float acceleration = 0.1f; //Time by which it reduces tick time
+    float acceleration = 0.8f; //(1 - acceleration) * 100 = % by which you speed up
 
     float timer = 0;
 
@@ -32,7 +32,10 @@ public class SpriteCycle : MonoBehaviour
 
     float speedTimer = 0;
 
-    int loops = 0;
+    bool skipAnote = false;
+    int skipCounter = 0;
+    int amountToSkip = 3;
+    int currentSpawnedIndex = 0;
 
     bool startedMusic = false;
 
@@ -55,7 +58,8 @@ public class SpriteCycle : MonoBehaviour
     void FixedUpdate()
     {
         timer += Time.deltaTime;
-        speedTimer += Time.deltaTime;
+        if (currentTick > 18)
+            speedTimer += Time.deltaTime;
 
         //StartMusic();
 
@@ -69,8 +73,23 @@ public class SpriteCycle : MonoBehaviour
             //    AddNotesToQueue(GenerateNote());
             //    loops++;
             //}
-            //AddNotesToQueue(GenerateNote());
-            ReadNotesFromFile();
+            //if generate randomly
+            if (!skipAnote)
+            {
+                AddNotesToQueue(GenerateNote());
+                GenerateRandomSecondNote(10);
+            }
+            else
+            {
+                skipCounter++;
+                if (skipCounter >= amountToSkip)
+                {
+                    skipAnote = false;
+                    skipCounter = 0;
+                }
+            }
+            //if partition
+            //ReadNotesFromFile();
             AddToOnNotes();
             TurnOnNotes();
             TurnOFFNotes();
@@ -86,17 +105,20 @@ public class SpriteCycle : MonoBehaviour
             timer = 0;
         }
 
-        //if (speedTimer >= speedUpTime)
-        //{
-        //    tickTime -= acceleration;
-        //    noteHitScript.tickTime = tickTime;
-        //}
+        if (speedTimer >= speedUpTime)
+        {
+            tickTime *= acceleration;
+            noteHitScript.tickTime = tickTime;
+            speedTimer = 0;
+            skipAnote = true;
+        }
     }
 
 
     Note GenerateNote()
     {
         int noteToSpawn = Random.Range(0, notes.Length);
+        currentSpawnedIndex = noteToSpawn;
         return notes[noteToSpawn];
     }
 
@@ -201,6 +223,18 @@ public class SpriteCycle : MonoBehaviour
             {
                 AddNotesToQueue(notes[3]);
             }
+        }
+    }
+
+    void GenerateRandomSecondNote(int oneInXchance)
+    {
+        int random = Random.Range(1, oneInXchance + 1);
+        if (random == 1)
+        {
+            if (currentSpawnedIndex < 2)
+                AddNotesToQueue(notes[currentSpawnedIndex + 2]);
+            else
+                AddNotesToQueue(notes[currentSpawnedIndex - 2]);
         }
     }
 
