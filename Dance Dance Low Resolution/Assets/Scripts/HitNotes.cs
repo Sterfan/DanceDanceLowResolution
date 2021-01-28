@@ -8,6 +8,13 @@ public class HitNotes : MonoBehaviour
 {
     SpriteCycle spriteCycler;
 
+    public bool failSafeMode = false;
+
+    AudioManager audioManager;
+
+    [SerializeField]
+    AudioSource backgroundBeat;
+
     [SerializeField]
     GameObject nonPaintedSprites;
 
@@ -50,7 +57,7 @@ public class HitNotes : MonoBehaviour
     [SerializeField]
      Text scoreText;
 
-    public float tickTime = 1;
+    public float tickTime;
 
     int score = 0;
 
@@ -72,9 +79,9 @@ public class HitNotes : MonoBehaviour
 
     int multiplier = 1;
 
-    float timer = 0;
-
     bool notAdded = true;
+
+    bool playAgainSound = false;
 
     List<GameObject> notesToHit = new List<GameObject>();
 
@@ -88,6 +95,7 @@ public class HitNotes : MonoBehaviour
             hitKeys[i] = false;
         }
         spriteCycler = FindObjectOfType<SpriteCycle>();
+        audioManager = FindObjectOfType<AudioManager>();
         tickTime = spriteCycler.tickTime;
     }
 
@@ -113,7 +121,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
-
+                    audioManager.PlaySound("Note 2");
                     RemoveHitNote();
                     ActivateHitSprites(true, yellowIndex);
                     AddScore();
@@ -150,6 +158,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
+                    audioManager.PlaySound("Note 3");
 
                     RemoveHitNote();
                     ActivateHitSprites(true, greenIndex);
@@ -187,6 +196,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
+                    audioManager.PlaySound("Note 4");
 
                     RemoveHitNote();
                     ActivateHitSprites(true, redIndex);
@@ -224,6 +234,7 @@ public class HitNotes : MonoBehaviour
                     //Add score
                     //Make guy dance
                     //Add to multiplier progress
+                    audioManager.PlaySound("Note 1");
 
                     RemoveHitNote();
                     ActivateHitSprites(true, blueIndex);
@@ -250,7 +261,7 @@ public class HitNotes : MonoBehaviour
         UpdateMultiplier();
         ManageMultiplierSprites();
 
-        if (health == 0)
+        if (health <= 0)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -339,17 +350,27 @@ public class HitNotes : MonoBehaviour
 
     void RemoveHealth()
     {
-        health--;
-        //Set heart sprite inactive
-        if (health >= 0)
+        if (!failSafeMode)
         {
-            hearts[health].SetActive(false);
-        }
-        if (health == 0)
-        {
-            tryAgain.SetActive(true);
-            nonPaintedSprites.SetActive(false);
-            Time.timeScale = 0f;
+            health--;
+            audioManager.PlaySound("Mistake");
+            //Set heart sprite inactive
+            if (health >= 0)
+            {
+                hearts[health].SetActive(false);
+            }
+            if (health <= 0)
+            {
+                tryAgain.SetActive(true);
+                nonPaintedSprites.SetActive(false);
+                if (!playAgainSound)
+                {
+                    backgroundBeat.Stop();
+                    audioManager.PlaySound("Try Again");
+                    playAgainSound = true;
+                }
+                //Time.timeScale = 0f;
+            }
         }
     }
 
@@ -426,6 +447,7 @@ public class HitNotes : MonoBehaviour
     {
         if (notesToHit.Count > 0)
         {
+            EnableBoo();
             for (int i = 0; i < notesToHit.Count; i++)
             {
                 RemoveHealth();

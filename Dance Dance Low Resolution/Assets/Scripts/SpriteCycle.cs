@@ -5,9 +5,13 @@ using UnityEngine;
 public class SpriteCycle : MonoBehaviour
 {
     [SerializeField]
+    AudioSource audioSource;
+
+    [SerializeField]
     Note[] notes;
 
     HitNotes noteHitScript;
+    Partition partition;
 
     List<GameObject> onNotes = new List<GameObject>();
     List<GameObject> offNotes = new List<GameObject>();
@@ -20,13 +24,20 @@ public class SpriteCycle : MonoBehaviour
     float speedUpTime = 10;
 
     [SerializeField]
-    float acceleration = 0.1f; //Time by which it reduces tick time
+    float acceleration = 0.8f; //(1 - acceleration) * 100 = % by which you speed up
 
     float timer = 0;
 
+    int currentTick = 0;
+
     float speedTimer = 0;
 
-    int loops = 0;
+    bool skipAnote = false;
+    int skipCounter = 0;
+    int amountToSkip = 3;
+    int currentSpawnedIndex = 0;
+
+    bool startedMusic = false;
 
 
     void Start()
@@ -40,13 +51,17 @@ public class SpriteCycle : MonoBehaviour
         }
 
         noteHitScript = FindObjectOfType<HitNotes>();
+        partition = FindObjectOfType<Partition>();
     }
 
 
     void FixedUpdate()
     {
         timer += Time.deltaTime;
-        speedTimer += Time.deltaTime;
+        if (currentTick > 18)
+            speedTimer += Time.deltaTime;
+
+        //StartMusic();
 
         if (timer >= tickTime)
         {
@@ -58,7 +73,23 @@ public class SpriteCycle : MonoBehaviour
             //    AddNotesToQueue(GenerateNote());
             //    loops++;
             //}
-            AddNotesToQueue(GenerateNote());
+            //if generate randomly
+            if (!skipAnote)
+            {
+                AddNotesToQueue(GenerateNote());
+                GenerateRandomSecondNote(10);
+            }
+            else
+            {
+                skipCounter++;
+                if (skipCounter >= amountToSkip)
+                {
+                    skipAnote = false;
+                    skipCounter = 0;
+                }
+            }
+            //if partition
+            //ReadNotesFromFile();
             AddToOnNotes();
             TurnOnNotes();
             TurnOFFNotes();
@@ -70,21 +101,24 @@ public class SpriteCycle : MonoBehaviour
 
 
 
-
+            currentTick++;
             timer = 0;
         }
 
-        //if (speedTimer >= speedUpTime)
-        //{
-        //    tickTime -= acceleration;
-        //    noteHitScript.tickTime = tickTime;
-        //}
+        if (speedTimer >= speedUpTime)
+        {
+            tickTime *= acceleration;
+            noteHitScript.tickTime = tickTime;
+            speedTimer = 0;
+            skipAnote = true;
+        }
     }
 
 
     Note GenerateNote()
     {
         int noteToSpawn = Random.Range(0, notes.Length);
+        currentSpawnedIndex = noteToSpawn;
         return notes[noteToSpawn];
     }
 
@@ -166,4 +200,50 @@ public class SpriteCycle : MonoBehaviour
             }
         }
     }
+
+    void ReadNotesFromFile()
+    {
+        if (currentTick < partition.eachLine.Count)
+        {
+            if (partition.eachLine[currentTick].Contains("y"))
+            {
+                AddNotesToQueue(notes[0]);
+            }
+            if (partition.eachLine[currentTick].Contains("g"))
+            {
+                AddNotesToQueue(notes[1]);
+
+            }
+            if (partition.eachLine[currentTick].Contains("r"))
+            {
+                AddNotesToQueue(notes[2]);
+                
+            }
+            if (partition.eachLine[currentTick].Contains("b"))
+            {
+                AddNotesToQueue(notes[3]);
+            }
+        }
+    }
+
+    void GenerateRandomSecondNote(int oneInXchance)
+    {
+        int random = Random.Range(1, oneInXchance + 1);
+        if (random == 1)
+        {
+            if (currentSpawnedIndex < 2)
+                AddNotesToQueue(notes[currentSpawnedIndex + 2]);
+            else
+                AddNotesToQueue(notes[currentSpawnedIndex - 2]);
+        }
+    }
+
+    //void StartMusic()
+    //{
+    //    if (!startedMusic && currentTick == notes[0].positions.Length)
+    //    {
+    //        audioSource.Play();
+    //        startedMusic = true;
+    //    }
+    //}
 }
