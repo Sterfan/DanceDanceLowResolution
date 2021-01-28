@@ -57,7 +57,7 @@ public class SpriteCycle : MonoBehaviour
         timer += Time.deltaTime;
         speedTimer += Time.deltaTime;
 
-        StartMusic();
+        //StartMusic();
 
         if (timer >= tickTime)
         {
@@ -204,12 +204,12 @@ public class SpriteCycle : MonoBehaviour
         }
     }
 
-    void StartMusic()
-    {
-        if (!startedMusic && currentTick == notes[0].positions.Length)
-        {
-            audioSource.Play();
-            startedMusic = true;
-        }
-    }
+    //void StartMusic()
+    //{
+    //    if (!startedMusic && currentTick == notes[0].positions.Length)
+    //    {
+    //        audioSource.Play();
+    //        startedMusic = true;
+    //    }
+    //}
 }
