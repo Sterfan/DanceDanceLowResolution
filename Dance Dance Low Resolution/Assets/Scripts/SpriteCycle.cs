@@ -29,6 +29,8 @@ public class SpriteCycle : MonoBehaviour
     float timer = 0;
 
     int currentTick = 0;
+    int tempTick = 0;
+    bool waitingToSpeedUp = false;
 
     float speedTimer = 0;
 
@@ -76,6 +78,17 @@ public class SpriteCycle : MonoBehaviour
             //if generate randomly
             if (!skipAnote)
             {
+                if (waitingToSpeedUp)
+                {
+                    if (currentTick > tempTick + 17)
+                    {
+                        tickTime *= acceleration;
+                        Debug.Log(tickTime);
+                        noteHitScript.tickTime = tickTime;
+                        speedTimer = 0;
+                        waitingToSpeedUp = false;
+                    }
+                }
                 AddNotesToQueue(GenerateNote());
                 GenerateRandomSecondNote(10);
             }
@@ -107,10 +120,12 @@ public class SpriteCycle : MonoBehaviour
 
         if (speedTimer >= speedUpTime)
         {
-            tickTime *= acceleration;
-            noteHitScript.tickTime = tickTime;
-            speedTimer = 0;
-            skipAnote = true;
+            if (!waitingToSpeedUp)
+            {
+                tempTick = currentTick;
+                waitingToSpeedUp = true;
+                skipAnote = true;
+            }
         }
     }
 
