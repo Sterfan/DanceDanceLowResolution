@@ -7635,7 +7635,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 069a834021a6475419d41d1fef7d6dd7, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 4ee11b556fbca3e4fa11010378754b9c, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.15
   m_Pitch: 1
@@ -14813,24 +14813,24 @@ MonoBehaviour:
     pitch: 1
     source: {fileID: 0}
   - name: Note 1
-    clip: {fileID: 8300000, guid: fd8c621415558a0468c768f3fd7fb1c1, type: 3}
+    clip: {fileID: 8300000, guid: fbca79b1176fe424eb6ca9dbe6383c0e, type: 3}
     volume: 0.4
-    pitch: 1
+    pitch: 1.5
     source: {fileID: 0}
   - name: Note 2
-    clip: {fileID: 8300000, guid: 0c61a4b56e2e1db48b2e2195f2b13803, type: 3}
+    clip: {fileID: 8300000, guid: 978314a98dfdadc408709bc652fc2dd1, type: 3}
     volume: 0.4
-    pitch: 1
+    pitch: 0.7
     source: {fileID: 0}
   - name: Note 3
-    clip: {fileID: 8300000, guid: 25da8ced7774eda4099057fcf18e9fe3, type: 3}
+    clip: {fileID: 8300000, guid: fbca79b1176fe424eb6ca9dbe6383c0e, type: 3}
     volume: 0.4
     pitch: 1
     source: {fileID: 0}
   - name: Note 4
-    clip: {fileID: 8300000, guid: 19e886f35f94eb14ca058234dd7a7afa, type: 3}
+    clip: {fileID: 8300000, guid: 978314a98dfdadc408709bc652fc2dd1, type: 3}
     volume: 0.4
-    pitch: 1
+    pitch: 1.2
     source: {fileID: 0}
 --- !u!4 &2063500529
 Transform:
